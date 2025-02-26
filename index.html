@@ -22,7 +22,8 @@
             max-width: 100%;
         }
 
-        #downloadBtn {
+        #cropContainer {
+            display: none;
             margin-top: 10px;
         }
 
@@ -30,6 +31,14 @@
             margin-top: 20px;
             font-size: 14px;
             color: #555;
+        }
+
+        .img-preview {
+            width: 200px;
+            height: 200px;
+            overflow: hidden;
+            border: 1px solid #ccc;
+            margin: auto;
         }
     </style>
 </head>
@@ -40,6 +49,14 @@
         <div class="mb-3">
             <input type="file" class="form-control" id="personalImageInput" accept="image/*" />
         </div>
+
+        <div id="cropContainer">
+            <h5>Crop Image</h5>
+            <div class="img-preview"></div>
+            <img id="cropImage" style="max-width: 100%;" />
+            <button class="btn btn-primary mt-2" id="cropBtn">Crop & Apply</button>
+        </div>
+
         <div class="mb-3">
             <input type="text" class="form-control" id="nameInput" placeholder="Enter Your Name (Max 20 Characters)"
                 maxlength="20" />
@@ -52,13 +69,14 @@
 
         <p class="footer">Designed & Developed by <a href="https://bharatnextgentech.com"
                 target="_blank">BharatNextGenTech.com</a></p>
-
     </div>
 
     <script>
         let cropper;
+        let croppedImageURL = null;
         let baseImage = new Image();
-        baseImage.src = "d.jpeg"; // Corrected uploaded image template
+        baseImage.src = "d.jpeg"; // Template image
+
         const canvas = document.getElementById("canvas");
         const ctx = canvas.getContext("2d");
 
@@ -73,15 +91,43 @@
             if (file) {
                 const reader = new FileReader();
                 reader.onload = function (e) {
-                    let img = new Image();
-                    img.src = e.target.result;
-                    img.onload = function () {
-                        ctx.drawImage(img, 650, 450, 400, 400); // Adjusted positioning
-                    };
+                    document.getElementById("cropContainer").style.display = "block"; // Show cropping section
+                    const cropImage = document.getElementById("cropImage");
+                    cropImage.src = e.target.result;
+
+                    if (cropper) {
+                        cropper.destroy();
+                    }
+
+                    cropper = new Cropper(cropImage, {
+                        aspectRatio: 1, // Square cropping
+                        viewMode: 2,
+                        preview: ".img-preview"
+                    });
                 };
                 reader.readAsDataURL(file);
             }
         });
+
+        document.getElementById("cropBtn").addEventListener("click", function () {
+            if (cropper) {
+                croppedImageURL = cropper.getCroppedCanvas().toDataURL(); // Get cropped image as data URL
+                document.getElementById("cropContainer").style.display = "none"; // Hide cropping section
+                cropper.destroy();
+                applyCroppedImage();
+            }
+        });
+
+        function applyCroppedImage() {
+            if (croppedImageURL) {
+                let img = new Image();
+                img.src = croppedImageURL;
+                img.onload = function () {
+                    ctx.drawImage(baseImage, 0, 0);
+                    ctx.drawImage(img, 650, 450, 400, 400); // Position the cropped image
+                };
+            }
+        }
 
         function generateImage() {
             const name = document.getElementById("nameInput").value;
@@ -100,15 +146,14 @@
             const x = 605; // X-position
             const y = 910; // Y-position
 
-            // Draw background rectangle (adjust color & padding)
-            ctx.fillStyle = "#feedd9"; // Background color
+            // Draw background rectangle
+            ctx.fillStyle = "#feedd9";
             ctx.fillRect(x, y - textHeight, 450, 90);
 
             // Draw the text on top
-            ctx.fillStyle = "red"; // Text color
+            ctx.fillStyle = "red";
             ctx.fillText(name, x, y);
         }
-
 
         function downloadImage() {
             const link = document.createElement("a");
