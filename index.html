@@ -124,10 +124,11 @@
                 img.src = croppedImageURL;
                 img.onload = function () {
                     ctx.drawImage(baseImage, 0, 0);
-                    ctx.drawImage(img, 650, 450, 400, 400); // Position the cropped image
+                    ctx.drawImage(img, 650, 450, 400, 400); // Adjust as per `d.png` target size
                 };
             }
         }
+
 
         function generateImage() {
             const name = document.getElementById("nameInput").value;
