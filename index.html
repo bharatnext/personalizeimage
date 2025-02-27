@@ -223,16 +223,16 @@
             <h5 class="mb-2">Crop Your Image</h5>
             <img id="cropImage" style="max-width: 90%; margin: 10px 0;">
         </div>
-        <button class="btn btn-primary w-100" id="cropBtn">Crop & Apply</button>
+        <!-- <button class="btn btn-primary w-100" id="cropBtn">Crop & Apply</button> -->
 
         <div class="mb-3">
             <input type="text" class="form-control" id="nameInput" placeholder="Enter Your Name (Max 20 chars)"
                 maxlength="20">
         </div>
 
-        <button class="btn btn-primary w-100" id="generateBtn">Generate</button>
+        <button class="btn btn-primary w-100" id="generateBtn">Generate & Download</button>
         <canvas id="canvas"></canvas>
-        <button class="btn btn-success w-100 mt-3" id="downloadBtn">Download Image</button>
+        <!-- <button class="btn btn-success w-100 mt-3" id="downloadBtn">Download Image</button> -->
 
         <p class="footer">Designed & Developed by <a href="https://bharatnextgentech.com"
                 target="_blank">BharatNextGenTech.com</a></p>
@@ -347,6 +347,7 @@
                 this.ctx.fillStyle = 'white';
                 this.ctx.fillText(name, rectX + padding, rectY + rectHeight - padding / 2);
                 this.downloadImage();
+                this.handleCrop()();
             }
 
             downloadImage() {
