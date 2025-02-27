@@ -120,6 +120,7 @@
             }
         });
 
+
         document.getElementById("cropBtn").addEventListener("touchend", function () {
             if (cropper) {
                 croppedImageURL = cropper.getCroppedCanvas().toDataURL();
@@ -154,11 +155,11 @@
             ctx.fillStyle = "#9d175e";
             const textWidth = ctx.measureText(name).width;
             const textHeight = canvas.height * 0.05;
-            const x = canvas.width * 0.5; // Center text
-            const y = canvas.height * 0.85;
+            const x = 1020; // Center text
+            const y = 1450;
 
             ctx.fillStyle = "#29166f";
-            ctx.fillRect(x - textWidth / 2, y - textHeight, textWidth, textHeight * 1.5);
+            ctx.fillRect(900, 1350, 1120, 150);
 
             ctx.fillStyle = "white";
             ctx.fillText(name, x - textWidth / 2, y);
