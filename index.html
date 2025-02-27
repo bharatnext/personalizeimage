@@ -270,7 +270,7 @@
                 document.getElementById('personalImageInput').addEventListener('change', this.handleImageUpload.bind(this));
                 document.getElementById('cropBtn').addEventListener('touchend', this.handleCrop.bind(this));
                 document.getElementById('generateBtn').addEventListener('click', this.generateImage.bind(this));
-                document.getElementById('downloadBtn').addEventListener('click', this.downloadImage.bind(this));
+                // document.getElementById('downloadBtn').addEventListener('click', this.downloadImage.bind(this));
             }
 
             handleImageUpload(event) {
@@ -363,22 +363,34 @@
 
             downloadImage() {
                 this.canvas.toBlob((blob) => {
+                    const url = URL.createObjectURL(blob);
+
+                    // Open the image in a new tab
+                    window.open(url, '_blank');
+
+                    // Create a download link
                     const link = document.createElement('a');
-                    link.href = URL.createObjectURL(blob);
+                    link.href = url;
                     link.download = 'personalized_image.png';
                     document.body.appendChild(link);
                     link.click();
                     document.body.removeChild(link);
+
+                    // Optional: Revoke object URL after some time to free memory
+                    setTimeout(() => {
+                        URL.revokeObjectURL(url);
+                    }, 2000);
+
                 }, 'image/png');
 
-                // Mobile fallback
-                setTimeout(() => {
-                    const dataURL = this.canvas.toDataURL('image/png');
-                    const link = document.createElement('a');
-                    link.href = dataURL;
-                    link.download = 'personalized_image.png';
-                    link.click();
-                }, 500);
+                // // Mobile fallback
+                // setTimeout(() => {
+                //     const dataURL = this.canvas.toDataURL('image/png');
+                //     const link = document.createElement('a');
+                //     link.href = dataURL;
+                //     link.download = 'personalized_image.png';
+                //     link.click();
+                // }, 500);
             }
         }
 
