@@ -100,9 +100,16 @@
                     }
 
                     cropper = new Cropper(cropImage, {
-                        aspectRatio: 1,
+                        aspectRatio: 4 / 5,
                         viewMode: 2,
-                        preview: ".img-preview"
+                        preview: ".img-preview",
+                        autoCropArea: 1,
+                        zoomable: false,  // Disables zooming inside the crop box
+                        scalable: false,  // Prevents resizing the crop area
+                        cropBoxResizable: false, // Disables manual resizing of the crop box
+                        movable: false,   // Prevents moving the crop box
+
+
                     });
                 };
                 reader.readAsDataURL(file);
@@ -124,13 +131,15 @@
                 img.src = croppedImageURL;
                 img.onload = function () {
                     ctx.drawImage(baseImage, 0, 0);
-                    ctx.drawImage(img, 650, 450, 400, 400);
+                    ctx.drawImage(img, 960, 430, 460, 540);
                 };
             }
         }
 
         function generateImage() {
-            const name = document.getElementById("nameInput").value;
+            var name = document.getElementById("nameInput").value;
+            name = name.toUpperCase()
+
             if (!name) {
                 alert("Please enter a name!");
                 return;
@@ -140,13 +149,13 @@
             ctx.fillStyle = "#9d175e";
             const textWidth = ctx.measureText(name).width;
             const textHeight = 50;
-            const x = 605;
-            const y = 910;
+            const x = 750;
+            const y = 1030;
 
-            ctx.fillStyle = "#feedd9";
-            ctx.fillRect(x, y - textHeight, 450, 90);
+            ctx.fillStyle = "#29166f";
+            ctx.fillRect(x, y - textHeight, 670, 100);
 
-            ctx.fillStyle = "red";
+            ctx.fillStyle = "white";
             ctx.fillText(name, x, y);
         }
 
