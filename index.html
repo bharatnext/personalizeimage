@@ -218,7 +218,7 @@
             <input type="file" class="form-control" id="personalImageInput" accept="image/*" capture="environment">
         </div>
 
-        <div class="img-preview"></div>
+        <!-- <div class="img-preview"></div> -->
         <div id="cropContainer">
             <h5 class="mb-2">Crop Your Image</h5>
             <img id="cropImage" style="max-width: 90%; margin: 10px 0;">
@@ -289,7 +289,7 @@
                         this.cropper = new Cropper(cropImage, {
                             aspectRatio: 1, // Square cropping for mobile efficiency
                             viewMode: 2,
-                            preview: '.img-preview',
+                            // preview: '.img-preview',
                             autoCropArea: 1,
                             zoomable: true,
                             scalable: false,
