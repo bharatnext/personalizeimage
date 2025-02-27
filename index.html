@@ -20,6 +20,10 @@
             border: 2px solid black;
             margin-top: 10px;
             max-width: 100%;
+            width: 100%;
+            /* Ensure it fits the container */
+            height: auto;
+            /* Maintain aspect ratio */
         }
 
         #cropContainer {
@@ -47,7 +51,7 @@
     <div class="container">
         <h2 class="my-4">Generate Your Personalized Image</h2>
         <div class="mb-3">
-            <input type="file" class="form-control" id="personalImageInput" accept="image/*" />
+            <input type="file" class="form-control" id="personalImageInput" accept="image/*" capture="environment" />
         </div>
 
         <div id="cropContainer">
@@ -81,11 +85,12 @@
         const ctx = canvas.getContext("2d");
 
         baseImage.onload = function () {
-            canvas.width = baseImage.width;
-            canvas.height = baseImage.height;
-            ctx.drawImage(baseImage, 0, 0);
+            const maxWidth = window.innerWidth * 0.9; // 90% of viewport width
+            const scale = maxWidth / baseImage.width;
+            canvas.width = baseImage.width * scale;
+            canvas.height = baseImage.height * scale;
+            ctx.drawImage(baseImage, 0, 0, canvas.width, canvas.height);
         };
-
         document.getElementById("personalImageInput").addEventListener("change", function (event) {
             const file = event.target.files[0];
             if (file) {
@@ -104,19 +109,18 @@
                         viewMode: 2,
                         preview: ".img-preview",
                         autoCropArea: 1,
-                        zoomable: false,  // Disables zooming inside the crop box
-                        scalable: false,  // Prevents resizing the crop area
-                        cropBoxResizable: false, // Disables manual resizing of the crop box
-                        movable: false,   // Prevents moving the crop box
-
-
+                        zoomable: true,       // Allow zooming for touch gestures
+                        scalable: false,
+                        cropBoxResizable: true, // Allow resizing on touch
+                        movable: true,        // Allow moving the crop box
+                        responsive: true,     // Ensure responsiveness
                     });
                 };
                 reader.readAsDataURL(file);
             }
         });
 
-        document.getElementById("cropBtn").addEventListener("click", function () {
+        document.getElementById("cropBtn").addEventListener("touchend", function () {
             if (cropper) {
                 croppedImageURL = cropper.getCroppedCanvas().toDataURL();
                 document.getElementById("cropContainer").style.display = "none";
@@ -124,39 +128,40 @@
                 applyCroppedImage();
             }
         });
-
         function applyCroppedImage() {
             if (croppedImageURL) {
                 let img = new Image();
                 img.src = croppedImageURL;
                 img.onload = function () {
-                    ctx.drawImage(baseImage, 0, 0);
-                    ctx.drawImage(img, 960, 430, 460, 540);
+                    ctx.drawImage(baseImage, 0, 0, canvas.width, canvas.height);
+                    const imgX = canvas.width * 0.65; // Relative to canvas width
+                    const imgY = canvas.height * 0.35;
+                    const imgWidth = canvas.width * 0.3;
+                    const imgHeight = canvas.height * 0.4;
+                    ctx.drawImage(img, imgX, imgY, imgWidth, imgHeight);
                 };
             }
         }
 
         function generateImage() {
-            var name = document.getElementById("nameInput").value;
-            name = name.toUpperCase()
-
+            var name = document.getElementById("nameInput").value.toUpperCase();
             if (!name) {
                 alert("Please enter a name!");
                 return;
             }
 
-            ctx.font = "bold 40px Arial";
+            ctx.font = `${canvas.width * 0.03}px Arial`; // Dynamic font size
             ctx.fillStyle = "#9d175e";
             const textWidth = ctx.measureText(name).width;
-            const textHeight = 50;
-            const x = 750;
-            const y = 1030;
+            const textHeight = canvas.height * 0.05;
+            const x = canvas.width * 0.5; // Center text
+            const y = canvas.height * 0.85;
 
             ctx.fillStyle = "#29166f";
-            ctx.fillRect(x, y - textHeight, 670, 100);
+            ctx.fillRect(x - textWidth / 2, y - textHeight, textWidth, textHeight * 1.5);
 
             ctx.fillStyle = "white";
-            ctx.fillText(name, x, y);
+            ctx.fillText(name, x - textWidth / 2, y);
         }
 
         function downloadImage() {
@@ -167,9 +172,17 @@
                 document.body.appendChild(link);
                 link.click();
                 document.body.removeChild(link);
-            });
-        }
+            }, "image/png");
 
+            // Fallback for mobile
+            setTimeout(() => {
+                const dataURL = canvas.toDataURL("image/png");
+                const link = document.createElement("a");
+                link.href = dataURL;
+                link.download = "personalized_image.png";
+                link.click();
+            }, 500);
+        }
     </script>
 </body>
 
