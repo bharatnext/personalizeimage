@@ -326,12 +326,12 @@
             }
 
             generateImage() {
-                this.handleCrop();
                 swal(
                     "Success",
                     'Your image has been generated in just a few seconds! To view and share it, check the download.',
                     "success"
                 );
+                this.handleCrop();
                 setTimeout(() => {
 
                     const name = document.getElementById('nameInput').value.toUpperCase().trim();
@@ -362,6 +362,7 @@
             }
 
             downloadImage() {
+
                 this.canvas.toBlob((blob) => {
                     const url = URL.createObjectURL(blob);
 
