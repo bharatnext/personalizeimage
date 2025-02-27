@@ -70,6 +70,20 @@
             #canvas {
                 border-width: 0.5px;
             }
+
+            #cropContainer {
+                max-height: 50vh;
+                /* Smaller height on mobile for better scrolling */
+                overflow-y: auto;
+                /* Ensure scrolling on mobile */
+            }
+
+            #cropImage {
+                max-width: 100%;
+                /* Ensure image fits within scrollable area */
+                width: auto;
+                height: auto;
+            }
         }
     </style>
 </head>
@@ -85,7 +99,7 @@
         <div id="cropContainer">
             <h5 class="mb-2">Crop Your Image</h5>
             <div class="img-preview"></div>
-            <img id="cropImage" style="max-width: 100%; margin: 10px 0;">
+            <img id="cropImage" style="max-width: 90%; margin: 10px 0;">
             <button class="btn btn-primary w-100" id="cropBtn">Crop & Apply</button>
         </div>
 
