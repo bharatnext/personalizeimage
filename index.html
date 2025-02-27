@@ -207,11 +207,37 @@
             background-color: #f1f1f1;
             /* Scrollbar track color */
         }
+
+        #fullPageLoader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.75);
+            /* Dark transparent background */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            color: white;
+            font-size: 1.2rem;
+            z-index: 9999;
+            /* Ensure it's on top of everything */
+        }
     </style>
 </head>
 
 <body>
+
     <div class="container">
+        <!-- Loader (Initially Hidden) -->
+        <!-- Fullscreen Loader (Initially Hidden) -->
+        <div id="fullPageLoader" class="d-none">
+            <div class="spinner-border text-light" role="status"></div>
+            <p>Generating Image, Please wait...</p>
+        </div>
+
         <h2 class="text-center mb-3">Personalized Image Generator</h2>
 
         <div class="mb-3">
@@ -326,11 +352,13 @@
             }
 
             generateImage() {
-                swal(
-                    "Success",
-                    'Your image has been generated in just a few seconds! To view and share it, check the download.',
-                    "success"
-                );
+                document.getElementById('fullPageLoader').classList.remove('d-none');
+
+                // swal(
+                //     "Success",
+                //     'Your image has been generated in just a few seconds! To view and share it, check the download.',
+                //     "success"
+                // );
                 this.handleCrop();
                 setTimeout(() => {
 
@@ -392,6 +420,9 @@
                 //     link.download = 'personalized_image.png';
                 //     link.click();
                 // }, 500);
+                setTimeout(() => {
+                    window.location.reload()
+                }, 2000);
             }
         }
 
