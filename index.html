@@ -400,7 +400,9 @@
                     // Create a download link
                     const link = document.createElement('a');
                     link.href = url;
-                    link.download = 'personalized_image.png';
+                    const timestamp = new Date().getTime(); // Example: 1709100000000
+                    link.download = `personalized_image_${timestamp}.png`;
+
                     document.body.appendChild(link);
                     link.click();
                     document.body.removeChild(link);
