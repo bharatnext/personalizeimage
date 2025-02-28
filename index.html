@@ -33,6 +33,18 @@
             /* Center the container */
         }
 
+        .btn-share {
+            display: none;
+            width: 100%;
+            background-color: #25D366;
+            color: white;
+            border: none;
+            padding: 10px;
+            border-radius: 5px;
+            margin-top: 10px;
+            font-size: 16px;
+        }
+
         /* Header Styling */
         h2.text-center {
             margin-bottom: 1rem;
@@ -237,11 +249,32 @@
             <div class="spinner-border text-light" role="status"></div>
             <p>Generating Image, Please wait...</p>
         </div>
-
         <h2 class="text-center mb-3">Personalized Image Generator</h2>
+        <div class="row">
 
-        <div class="mb-3">
-            <input type="file" class="form-control" id="personalImageInput" accept="image/*" capture="environment">
+            <div class="col-6">
+                <button class="btn btn-success w-100 mt-2 d-flex align-items-center justify-content-center"
+                    id="shareBtn">
+                    <img src="https://img.icons8.com/color/24/whatsapp.png" alt="WhatsApp Icon" class="me-2"> Share on
+                    WhatsApp
+                </button>
+            </div>
+            <div class="col-6">
+                <!-- Copy Link Button -->
+                <button class="btn btn-primary w-100 mt-2 d-flex align-items-center justify-content-center"
+                    id="copyLinkBtn">
+                    <img src="https://img.icons8.com/ios-filled/24/ffffff/link.png" alt="Copy Icon" class="me-2"> Copy
+                    Link
+                </button>
+            </div>
+
+
+
+        </div>
+
+
+        <div class="mb-3 mt-5">
+            <input type="file" class="form-control" id="personalImageInput" accept="image/*" accept="image/*">
         </div>
 
         <!-- <div class="img-preview"></div> -->
@@ -431,6 +464,22 @@
         // Initialize when DOM is loaded
         document.addEventListener('DOMContentLoaded', () => {
             new ImageGenerator();
+        });
+        const websiteURL = "https://smvm.bharatnextgentech.com/"; // Replace with your actual URL
+
+        // WhatsApp Share
+        document.getElementById('shareBtn').addEventListener('click', function () {
+            const whatsappLink = `https://wa.me/?text=${encodeURIComponent("Check out this awesome website: " + websiteURL)}`;
+            window.open(whatsappLink, '_blank');
+        });
+
+        // Copy Link
+        document.getElementById('copyLinkBtn').addEventListener('click', function () {
+            navigator.clipboard.writeText(websiteURL).then(() => {
+                alert("🔗 Link copied to clipboard!");
+            }).catch(err => {
+                console.error("Failed to copy:", err);
+            });
         });
     </script>
 </body>
