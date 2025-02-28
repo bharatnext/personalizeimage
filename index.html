@@ -405,7 +405,10 @@
                     if (!name) {
                         alert('Please enter a name!');
 
+                        setTimeout(() => {
 
+                            window.location.reload();
+                        }, 1000);
                         return;
                     }
 
