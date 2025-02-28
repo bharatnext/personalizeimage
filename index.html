@@ -404,6 +404,8 @@
                     const name = document.getElementById('nameInput').value.toUpperCase().trim();
                     if (!name) {
                         alert('Please enter a name!');
+
+
                         return;
                     }
 
@@ -420,7 +422,7 @@
                     const rectWidth = textWidth + padding * 2;
                     const rectHeight = textHeight * 1.5;
 
-                    this.ctx.fillStyle = '#e15517';
+                    this.ctx.fillStyle = '#0a0a52';
                     this.ctx.fillRect(rectX, rectY, rectWidth, rectHeight);
 
                     this.ctx.fillStyle = 'white';
