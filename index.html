@@ -318,9 +318,21 @@
                 this.baseImage.onload = () => {
                     const maxWidth = window.innerWidth * 0.9;
                     const scale = maxWidth / this.baseImage.width;
-                    this.canvas.width = this.baseImage.width * scale;
-                    this.canvas.height = this.baseImage.height * scale;
-                    this.ctx.drawImage(this.baseImage, 0, 0, this.canvas.width, this.canvas.height);
+                    const pixelRatio = window.devicePixelRatio || 1; // Get device pixel ratio
+
+                    // Set canvas CSS size
+                    this.canvas.style.width = `${maxWidth}px`;
+                    this.canvas.style.height = `${this.baseImage.height * scale}px`;
+
+                    // Set canvas drawing surface size (higher resolution)
+                    this.canvas.width = this.baseImage.width * scale * pixelRatio;
+                    this.canvas.height = this.baseImage.height * scale * pixelRatio;
+
+                    // Scale the context to match pixel ratio
+                    this.ctx.scale(pixelRatio, pixelRatio);
+
+                    // Draw base image
+                    this.ctx.drawImage(this.baseImage, 0, 0, maxWidth, this.baseImage.height * scale);
                 };
             }
 
@@ -374,10 +386,11 @@
                     const img = new Image();
                     img.src = this.croppedImageURL;
                     img.onload = () => {
-                        this.ctx.drawImage(this.baseImage, 0, 0, this.canvas.width, this.canvas.height);
-                        const imgX = this.canvas.width * 0.65;
-                        const imgY = this.canvas.height * 0.35;
-                        const imgSize = this.canvas.width * 0.3; // Use same size for width and height for square
+                        const pixelRatio = window.devicePixelRatio || 1;
+                        this.ctx.drawImage(this.baseImage, 0, 0, this.canvas.width / pixelRatio, this.canvas.height / pixelRatio);
+                        const imgX = (this.canvas.width / pixelRatio) * 0.65;
+                        const imgY = (this.canvas.height / pixelRatio) * 0.35;
+                        const imgSize = (this.canvas.width / pixelRatio) * 0.3;
                         this.ctx.drawImage(img, imgX, imgY, imgSize, imgSize);
                     };
                 }
@@ -386,29 +399,24 @@
             generateImage() {
                 document.getElementById('fullPageLoader').classList.remove('d-none');
 
-                // swal(
-                //     "Success",
-                //     'Your image has been generated in just a few seconds! To view and share it, check the download.',
-                //     "success"
-                // );
                 this.handleCrop();
                 setTimeout(() => {
-
                     const name = document.getElementById('nameInput').value.toUpperCase().trim();
                     if (!name) {
                         alert('Please enter a name!');
                         return;
                     }
 
-                    this.ctx.font = `${this.canvas.width * 0.03}px Arial`;
+                    const pixelRatio = window.devicePixelRatio || 1;
+                    this.ctx.font = `${(this.canvas.width / pixelRatio) * 0.03}px Arial`;
                     this.ctx.fillStyle = '#9d175e';
+                    this.ctx.textBaseline = 'middle'; // Improve text alignment
                     const textWidth = this.ctx.measureText(name).width;
-                    const textHeight = this.canvas.height * 0.05;
+                    const textHeight = (this.canvas.height / pixelRatio) * 0.05;
                     const padding = 10;
 
-                    // Center the rectangle at the bottom
-                    const rectX = this.canvas.width * 0.8 - (textWidth + padding * 2) / 2;
-                    const rectY = this.canvas.height * 0.7 - textHeight;
+                    const rectX = (this.canvas.width / pixelRatio) * 0.8 - (textWidth + padding * 2) / 2;
+                    const rectY = (this.canvas.height / pixelRatio) * 0.7 - textHeight;
                     const rectWidth = textWidth + padding * 2;
                     const rectHeight = textHeight * 1.5;
 
@@ -416,35 +424,31 @@
                     this.ctx.fillRect(rectX, rectY, rectWidth, rectHeight);
 
                     this.ctx.fillStyle = 'white';
-                    this.ctx.fillText(name, rectX + padding, rectY + rectHeight - padding / 2);
+                    this.ctx.fillText(name, rectX + padding, rectY + rectHeight / 2);
                     this.downloadImage();
                 }, 1500);
             }
 
             downloadImage() {
-
                 this.canvas.toBlob((blob) => {
                     const url = URL.createObjectURL(blob);
 
-                    // Open the image in a new tab
                     window.open(url, '_blank');
 
-                    // Create a download link
                     const link = document.createElement('a');
                     link.href = url;
-                    const timestamp = new Date().getTime(); // Example: 1709100000000
+                    const timestamp = new Date().getTime();
                     link.download = `personalized_image_${timestamp}.png`;
 
                     document.body.appendChild(link);
                     link.click();
                     document.body.removeChild(link);
 
-                    // Optional: Revoke object URL after some time to free memory
                     setTimeout(() => {
                         URL.revokeObjectURL(url);
                     }, 2000);
+                }, 'image/png', 1.0); // 1.0 is maximum quality
 
-                }, 'image/png');
 
                 // // Mobile fallback
                 // setTimeout(() => {
